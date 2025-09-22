@@ -6,7 +6,7 @@ import { sendError, sendResponse } from "../utils/messages.js";
 class Autenticacao {
     static login = async (req, res) => {
         try {
-            const response = await authService.login(req.body)
+            const response = await AuthService.login(req.body)
 
             return sendResponse(res, 200, {
                 data: response

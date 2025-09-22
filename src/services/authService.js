@@ -1,13 +1,13 @@
 import UserRepository from '../repositories/userRepository.js'
 import Jwt from "jsonwebtoken";
 import HashSenha from '../utils/hashSenha.js';
-import AuthSchema from '../validators/authValidator.js';
+import AutenticacaoSchema from '../validadores/authValidator.js';
 import { APIErro } from "../utils/ApiError.js";
 
 class AuthService {
     static login = async (data) => {
-        
-        const { email, senha } = AuthSchema.loginSchema.parse(data)
+
+        const { email, senha } = AutenticacaoSchema.loginSchema.parse(data)
         const user = await UserRepository.findByEmail(email)
 
         if (!user) {
