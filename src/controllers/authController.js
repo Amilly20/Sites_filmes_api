@@ -27,6 +27,7 @@ class Autenticacao {
                 return sendError(res, 400, errors)
             }
 
+            console.log("Erro no login:", error); // Log temporário para debug
             return sendError(res, 500, [])
         }
     }
