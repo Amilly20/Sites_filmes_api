@@ -2,6 +2,7 @@
 import usuarioCadastrar from '../routes/users/userRegister.js';
 import userRegisterSchemas from '../schemas/users/userRegister.js';
 import authLogin from '../routes/auth/authLogin.js';
+import { forgotPassword, resetPassword } from '../routes/auth/passwordReset.js';
 import authSchemas from '../schemas/auth/authSchemas.js';
 
 const getSwaggerOptions = () => ({
@@ -21,6 +22,8 @@ const getSwaggerOptions = () => ({
     ],
     paths: {
       ...authLogin,
+      ...forgotPassword,
+      ...resetPassword,
       ...usuarioCadastrar
     },
     components: {
