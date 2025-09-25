@@ -1,7 +1,5 @@
 import crypto from 'crypto';
 import UserRepository from '../repositories/userRepository.js';
-import PasswordReset from '../models/PasswordReset.js';
-import EmailService from './emailService.js';
 import HashSenha from '../utils/hashSenha.js';
 import UserValidationSchema from '../validadores/userValidator.js';
 import { APIErro } from "../utils/ApiError.js";
@@ -23,29 +21,25 @@ class PasswordResetService {
     // Definir expiração (1 hora)
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
     
-    // Salvar token no banco
-    await PasswordReset.create({
-      email,
-      token: resetToken,
-      expiresAt,
-      used: false
+    // Salvar token diretamente no usuário
+    await UserRepository.update(user._id, {
+      resetToken: resetToken,
+      resetTokenExpires: expiresAt
     });
     
-    // Enviar email
-    await EmailService.sendPasswordResetEmail(email, resetToken);
-    
+    // Por enquanto, apenas log (sem envio real de email)
     console.log(`Token de reset gerado para ${email}: ${resetToken}`);
+    console.log(`Link de reset: /reset-password?token=${resetToken}`);
   }
 
   static async resetPassword(token, newPassword) {
-    // Buscar token válido
-    const resetRecord = await PasswordReset.findOne({
-      token,
-      used: false,
-      expiresAt: { $gt: new Date() }
+    // Buscar usuário com token válido e não expirado
+    const user = await UserRepository.findOne({
+      resetToken: token,
+      resetTokenExpires: { $gt: new Date() }
     });
 
-    if (!resetRecord) {
+    if (!user) {
       throw new APIErro(400, [{
         path: "token",
         message: "Token inválido ou expirado"
@@ -56,25 +50,17 @@ class PasswordResetService {
     try {
       const { password } = UserValidationSchema.registerSchema.pick({ password: true }).parse({ password: newPassword });
       
-      // Buscar usuário
-      const user = await UserRepository.findByEmail(resetRecord.email);
-      if (!user) {
-        throw new APIErro(400, [{
-          path: "email",
-          message: "Usuário não encontrado"
-        }]);
-      }
-
       // Hash da nova senha
       const hashedPassword = await HashSenha.criarHashSenha(password);
       
-      // Atualizar senha do usuário
-      await UserRepository.update(user._id, { password: hashedPassword });
+      // Atualizar senha e limpar token
+      await UserRepository.update(user._id, { 
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpires: null
+      });
       
-      // Marcar token como usado
-      await PasswordReset.findByIdAndUpdate(resetRecord._id, { used: true });
-      
-      console.log(`Senha redefinida com sucesso para: ${resetRecord.email}`);
+      console.log(`Senha redefinida com sucesso para: ${user.email}`);
       
     } catch (validationError) {
       if (validationError.issues) {

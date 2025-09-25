@@ -35,13 +35,12 @@ class Autenticacao {
 
     static forgotPassword = async (req, res) => {
         try {
-            const { email } = req.body;
+            // Validar formato do email com Zod
+            const emailSchema = z.object({
+                email: z.string().email("Email deve ter formato válido")
+            });
             
-            if (!email) {
-                return sendError(res, 400, [
-                    { path: "email", message: "Email é obrigatório" }
-                ]);
-            }
+            const { email } = emailSchema.parse(req.body);
 
             await PasswordResetService.requestPasswordReset(email);
             
@@ -53,6 +52,17 @@ class Autenticacao {
                 const { code, errors } = error.toJson();
                 return sendError(res, code, ...errors);
             }
+
+            if (error instanceof z.ZodError) {
+                let errors = []
+                error.issues.map((issue) => (
+                    errors.push({
+                        path: issue.path[0],
+                        message: issue.message
+                    })))
+                return sendError(res, 400, errors)
+            }
+
             console.log("Erro no esqueci senha:", error);
             return sendError(res, 500, [{ path: "server", message: "Erro interno do servidor" }]);
         }

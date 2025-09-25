@@ -1,0 +1,22 @@
+{
+  "testEnvironment": "node",
+  "setupFilesAfterEnv": ["<rootDir>/test/setup.js"],
+  "testMatch": [
+    "<rootDir>/test/**/*.test.js"
+  ],
+  "collectCoverageFrom": [
+    "src/**/*.js",
+    "!src/server.js",
+    "!src/docs/**",
+    "!src/seeds/**"
+  ],
+  "coverageDirectory": "coverage",
+  "coverageReporters": [
+    "text",
+    "lcov",
+    "html"
+  ],
+  "maxWorkers": 1,
+  "verbose": true,
+  "testTimeout": 30000
+}

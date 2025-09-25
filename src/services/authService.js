@@ -30,7 +30,7 @@ class AuthService {
             email: user.email,
             name: user.name,
             role: user.role || 'user'
-        }, process.env.JWT_SECRET, { expiresIn: '5d'})
+        }, process.env.JWT_SECRET, { expiresIn: '24h'})
 
         return{
             token: token,

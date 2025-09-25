@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
   },
   devices: [{ type: String }],
   history: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
-  downloads: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
+  downloads: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
+  // Campos para recuperação de senha
+  resetToken: { type: String, default: null },
+  resetTokenExpires: { type: Date, default: null }
 }, {
   timestamps: true
 });
