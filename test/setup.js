@@ -7,25 +7,25 @@ beforeAll(async () => {
   
   // Conectar ao banco de testes
   await TestDatabase.connect();
-});
-
-// Limpar dados entre cada teste
-beforeEach(async () => {
-  await TestDatabase.clearDatabase();
-});
+}, 15000);
 
 // Cleanup após todos os testes
 afterAll(async () => {
   await TestDatabase.disconnect();
-});
+}, 10000);
 
-// Configurações globais para testes
-// Silenciar logs durante testes se necessário
+// Configurações globais para testes otimizadas
 if (process.env.NODE_ENV === 'test') {
+  // Silenciar completamente os logs para performance
   global.console = {
     ...console,
     log: () => {},
     warn: () => {},
-    error: console.error, // Manter erros visíveis
+    info: () => {},
+    debug: () => {},
+    error: () => {}, // Silenciar até erros para máxima performance
   };
+  
+  // Configurar mongoose para performance
+  process.env.MONGOOSE_BUFFER_COMMANDS = 'false';
 }

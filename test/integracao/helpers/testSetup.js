@@ -34,18 +34,19 @@ class TestSetup {
   }
 
   /**
-   * Cria usuário para testes
+   * Cria usuário para testes (otimizado)
    */
   async createTestUser(userData = {}) {
-    const defaultUser = {
-      name: 'Test User',
-      email: 'test@gmail.com',
-      password: 'Test123!@#'
+    const finalUserData = {
+      name: userData.name || 'Test User',
+      email: userData.email || `test${Date.now()}@gmail.com`,
+      password: userData.password || 'Test123!@#'
     };
     
     const response = await this.server
       .post('/api/users/register')
-      .send({ ...defaultUser, ...userData });
+      .send(finalUserData)
+      .timeout(5000); // Timeout menor
       
     return response;
   }

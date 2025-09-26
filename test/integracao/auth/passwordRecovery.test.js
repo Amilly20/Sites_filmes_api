@@ -14,6 +14,8 @@ describe('🔄 Integração - Fluxo de Recuperação de Senha', () => {
   });
 
   beforeEach(async () => {
+    // Este teste específico precisa de limpeza completa
+    process.env.FORCE_CLEAR = 'true';
     await testSetup.clearData();
   });
 

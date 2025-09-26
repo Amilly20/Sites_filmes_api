@@ -27,12 +27,12 @@ class TestDatabase {
   static async clearDatabase() {
     const collections = mongoose.connection.collections;
     
-    for (const key in collections) {
-      const collection = collections[key];
-      await collection.deleteMany({});
-    }
+    // Usar Promise.all para limpeza paralela
+    const clearPromises = Object.keys(collections).map(key => 
+      collections[key].deleteMany({})
+    );
     
-    console.log('🧹 Banco de testes limpo');
+    await Promise.all(clearPromises);
   }
 }
 

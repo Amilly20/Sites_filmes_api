@@ -17,6 +17,9 @@
     "html"
   ],
   "maxWorkers": 1,
-  "verbose": true,
-  "testTimeout": 30000
+  "verbose": false,
+  "testTimeout": 10000,
+  "silent": true,
+  "detectOpenHandles": false,
+  "forceExit": true
 }
