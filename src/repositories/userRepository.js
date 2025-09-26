@@ -23,6 +23,10 @@ export default class UserRepository {
 		return await User.findById(userId);
 	}
 
+	static async findOne(query) {
+		return await User.findOne(query);
+	}
+
 	static async buscarPorId(userId) {
 		return await User.findById(userId);
 	}
@@ -45,6 +49,8 @@ export default class UserRepository {
 		if (data.devices) updateData.devices = data.devices;
 		if (data.history) updateData.history = data.history;
 		if (data.downloads) updateData.downloads = data.downloads;
+		if (data.resetToken !== undefined) updateData.resetToken = data.resetToken;
+		if (data.resetTokenExpires !== undefined) updateData.resetTokenExpires = data.resetTokenExpires;
 
 		return await User.findByIdAndUpdate(userId, updateData, { new: true }).select("-password");
 	}
