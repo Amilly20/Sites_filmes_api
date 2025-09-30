@@ -11,7 +11,7 @@ const criarUsuarios = async () => [
 		email: 'admin@filmes.com',
 		password: await HashSenha.criarHashSenha('Admin@123'),
 		role: 'admin',
-		plan: { type: 'lifetime', startDate: new Date(), endDate: null },
+		plan: { type: 'lifetime', startDate: new Date(), endDate: null, downloadsUsed: 0, monthlyDownloadsReset: new Date() },
 		devices: ['PC'],
 		history: [],
 		downloads: []
@@ -21,7 +21,17 @@ const criarUsuarios = async () => [
 		email: 'user@filmes.com',
 		password: await HashSenha.criarHashSenha('User@123'),
 		role: 'user',
-		plan: { type: 'monthly', startDate: new Date(), endDate: null },
+		plan: { type: 'monthly', startDate: new Date(), endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), downloadsUsed: 0, monthlyDownloadsReset: new Date() },
+		devices: ['Celular'],
+		history: [],
+		downloads: []
+	},
+	{
+		name: 'Usuário Gratuito',
+		email: 'free@filmes.com',
+		password: await HashSenha.criarHashSenha('Free@123'),
+		role: 'user',
+		plan: { type: 'free', startDate: new Date(), endDate: null, downloadsUsed: 3, monthlyDownloadsReset: new Date() },
 		devices: ['Celular'],
 		history: [],
 		downloads: []
@@ -30,25 +40,52 @@ const criarUsuarios = async () => [
 
 const seedPlans = [
 	{
-		name: 'Gratuito',
+		name: 'free',
+		displayName: 'Gratuito',
 		price: 0,
-		features: ['Acesso limitado', 'Com anúncios'],
-		downloadLimit: 0,
-		ads: true
+		currency: 'BRL',
+		features: {
+			showAds: true,
+			monthlyDownloads: 10,
+			unlimitedAccess: false,
+			hdQuality: false,
+			simultaneousDevices: 1,
+			offlineDownload: false
+		},
+		duration: null,
+		active: true
 	},
 	{
-		name: 'Mensal',
-		price: 29.9,
-		features: ['Acesso total', 'Sem anúncios', 'Downloads limitados'],
-		downloadLimit: 10,
-		ads: false
+		name: 'monthly',
+		displayName: 'Mensal',
+		price: 19.90,
+		currency: 'BRL',
+		features: {
+			showAds: false,
+			monthlyDownloads: 100,
+			unlimitedAccess: false,
+			hdQuality: true,
+			simultaneousDevices: 2,
+			offlineDownload: true
+		},
+		duration: 30,
+		active: true
 	},
 	{
-		name: 'Vitalício',
-		price: 199.9,
-		features: ['Acesso total', 'Sem anúncios', 'Downloads ilimitados'],
-		downloadLimit: null,
-		ads: false
+		name: 'lifetime',
+		displayName: 'Vitalício',
+		price: 299.90,
+		currency: 'BRL',
+		features: {
+			showAds: false,
+			monthlyDownloads: 0, // 0 = ilimitado
+			unlimitedAccess: true,
+			hdQuality: true,
+			simultaneousDevices: 5,
+			offlineDownload: true
+		},
+		duration: null,
+		active: true
 	}
 ];
 

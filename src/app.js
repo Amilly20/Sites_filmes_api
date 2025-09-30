@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { DbConnect } from "./config/dbConnect.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import planRoutes from "./routes/planRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import getSwaggerOptions from "./docs/config/head.js";
@@ -36,18 +37,36 @@ app.use(express.json());
 // Rotas
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/plans", planRoutes);
 
 // Documentação Swagger
-const swaggerSpec = swaggerJSDoc(getSwaggerOptions());
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerOptions = getSwaggerOptions();
+console.log('🔧 Configurando Swagger...');
 
-// Rota de teste - removida pois o Swagger agora está na raiz
-// app.get("/", (req, res) => {
-//   res.json({
-//     message: "API funcionando!",
-//     status: "success",
-//     timestamp: new Date().toISOString()
-//   });
-// });
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+console.log('📄 Spec gerada:', Object.keys(swaggerSpec).join(', '));
+
+// Servir Swagger UI na rota /api-docs
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: "🎬 API Sites Filmes - Sistema de Planos de Assinatura",
+  customCss: `
+    .swagger-ui .topbar { display: none }
+    .swagger-ui .info .title { color: #1f2937; font-size: 2rem; }
+    .swagger-ui .scheme-container { background: #f8fafc; padding: 10px; border-radius: 8px; }
+  `,
+  swaggerOptions: {
+    explorer: true,
+    filter: true,
+    showRequestDuration: true,
+    defaultModelsExpandDepth: 2,
+    docExpansion: 'list'
+  }
+}));
+
+// Rota raiz com redirecionamento para documentação
+app.get("/", (req, res) => {
+  res.redirect('/api-docs');
+});
 
 export default app;

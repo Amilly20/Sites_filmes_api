@@ -37,7 +37,11 @@ describe('🔄 Integração - Fluxo de Registro de Usuário', () => {
         data: {
           id: expect.any(String),
           name: 'João Silva',
-          email: 'joao@gmail.com'
+          email: 'joao@gmail.com',
+          plan: {
+            type: 'free',
+            features: expect.any(String)
+          }
         },
         error: false,
         code: 201,

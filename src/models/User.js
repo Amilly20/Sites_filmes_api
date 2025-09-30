@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
   plan: {
     type: { type: String, enum: ['free', 'monthly', 'lifetime'], default: 'free' },
     startDate: { type: Date, default: Date.now },
-    endDate: { type: Date, default: null }
+    endDate: { type: Date, default: null }, // null para lifetime
+    downloadsUsed: { type: Number, default: 0 },
+    monthlyDownloadsReset: { type: Date, default: Date.now }
   },
   devices: [{ type: String }],
   history: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
