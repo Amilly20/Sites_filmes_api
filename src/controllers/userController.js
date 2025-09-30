@@ -22,15 +22,36 @@ class UserController {
       // Hash da senha antes de salvar
       const hashedPassword = await HashSenha.criarHashSenha(password);
       
-      // Cria usuário
-      const user = await UserRepository.create({ name, email, password: hashedPassword });
+      // Configurar plano gratuito inicial
+      const freePlan = {
+        type: 'free',
+        startDate: new Date(),
+        endDate: null, // Plano gratuito não expira
+        downloadsUsed: 0,
+        monthlyDownloadsReset: new Date() // Próximo reset será no primeiro dia do próximo mês
+      };
+      
+      // Cria usuário com plano gratuito
+      const user = await UserRepository.create({ 
+        name, 
+        email, 
+        password: hashedPassword,
+        plan: freePlan,
+        devices: [],
+        history: [],
+        downloads: []
+      });
       
       return sendResponse(res, 201, {
-        message: "Usuário cadastrado com sucesso",
+        message: "Usuário cadastrado com sucesso! Você recebeu um plano gratuito para começar a explorar nossa plataforma.",
         data: {
           id: user._id,
           name: user.name,
           email: user.email,
+          plan: {
+            type: user.plan.type,
+            features: "10 downloads/mês, anúncios, 1 dispositivo"
+          }
         }
       });
     } catch (error) {
