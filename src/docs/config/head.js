@@ -7,11 +7,19 @@ import authSchemas from '../schemas/auth/authSchemas.js';
 
 // Importar documentação de planos
 import planSchemas from '../schemas/plans/planSchemas.js';
+import planUpgradeSchemas from '../schemas/plans/planUpgradeSchemas.js';
 import listPlans from '../routes/plans/listPlans.js';
 import getMyPlan from '../routes/plans/getMyPlan.js';
 import changePlan from '../routes/plans/changePlan.js';
 import registerDownload from '../routes/plans/registerDownload.js';
 import adsConfig from '../routes/plans/adsConfig.js';
+
+// Importar documentação de upgrade/downgrade
+import planUpgrade from '../routes/plans/planUpgrade.js';
+import planDowngrade from '../routes/plans/planDowngrade.js';
+import planChangeIntelligent from '../routes/plans/planChangeIntelligent.js';
+import upgradeOptions from '../routes/plans/upgradeOptions.js';
+import changePreview from '../routes/plans/changePreview.js';
 
 const getSwaggerOptions = () => ({
   definition: {
@@ -40,18 +48,25 @@ const getSwaggerOptions = () => ({
       ...forgotPassword,
       ...resetPassword,
       ...usuarioCadastrar,
-      // Rotas de planos
+      // Rotas de planos básicas
       '/plans': listPlans['/api/plans'],
       '/plans/my-plan': getMyPlan['/api/plans/my-plan'],
       '/plans/change': changePlan['/api/plans/change'],
       '/plans/download': registerDownload['/api/plans/download'],
-      '/plans/ads-config': adsConfig['/api/plans/ads-config']
+      '/plans/ads-config': adsConfig['/api/plans/ads-config'],
+      // Rotas de upgrade/downgrade - RF06
+      '/plans/upgrade': planUpgrade['/plans/upgrade'],
+      '/plans/downgrade': planDowngrade['/plans/downgrade'],
+      '/plans/change-intelligent': planChangeIntelligent['/plans/change-intelligent'],
+      '/plans/upgrade-options': upgradeOptions['/plans/upgrade-options'],
+      '/plans/change-preview': changePreview['/plans/change-preview']
     },
     components: {
       schemas: {
         ...userRegisterSchemas,
         ...authSchemas,
-        ...planSchemas
+        ...planSchemas,
+        ...planUpgradeSchemas
       },
       securitySchemes: {
         bearerAuth: {
