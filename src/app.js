@@ -5,6 +5,7 @@ import { DbConnect } from "./config/dbConnect.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
+import planUpgradeRoutes from "./routes/planUpgradeRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import getSwaggerOptions from "./docs/config/head.js";
@@ -38,6 +39,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/plans", planRoutes);
+app.use("/api/plans", planUpgradeRoutes); // Rotas de upgrade/downgrade
 
 // Documentação Swagger
 const swaggerOptions = getSwaggerOptions();
