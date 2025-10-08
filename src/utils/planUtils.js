@@ -21,7 +21,15 @@ export const PLAN_CONFIGS = {
       unlimitedAccess: false,
       hdQuality: false,
       simultaneousDevices: 1,
-      offlineDownload: false
+      offlineDownload: false,
+      quality: ['720p'],
+      support: 'community',
+      downloadSpeed: 'normal',
+      concurrentDownloads: 1
+    },
+    limits: {
+      maxFileSize: 2 * 1024 * 1024 * 1024, // 2GB
+      storageTime: 24 * 60 * 60 * 1000 // 24 horas
     },
     duration: null, // permanente
     description: 'Plano gratuito com anúncios e acesso limitado'
@@ -38,10 +46,25 @@ export const PLAN_CONFIGS = {
       unlimitedAccess: false,
       hdQuality: true,
       simultaneousDevices: 2,
-      offlineDownload: true
+      offlineDownload: true,
+      quality: ['720p', '1080p'],
+      support: 'email',
+      downloadSpeed: 'fast',
+      concurrentDownloads: 3
+    },
+    limits: {
+      maxFileSize: 8 * 1024 * 1024 * 1024, // 8GB
+      storageTime: 7 * 24 * 60 * 60 * 1000 // 7 dias
     },
     duration: 30, // 30 dias
-    description: 'Sem anúncios, downloads limitados e qualidade HD'
+    description: 'Sem anúncios, downloads limitados e qualidade HD',
+    benefits: [
+      'Sem propagandas',
+      'Qualidade até 1080p',
+      'Suporte por email',
+      'Velocidade aumentada',
+      'Até 3 downloads simultâneos'
+    ]
   },
 
   [PLAN_TYPES.LIFETIME]: {
@@ -55,10 +78,27 @@ export const PLAN_CONFIGS = {
       unlimitedAccess: true,
       hdQuality: true,
       simultaneousDevices: 5,
-      offlineDownload: true
+      offlineDownload: true,
+      quality: ['720p', '1080p', '4K'],
+      support: 'priority',
+      downloadSpeed: 'ultra',
+      concurrentDownloads: 10
+    },
+    limits: {
+      maxFileSize: 50 * 1024 * 1024 * 1024, // 50GB
+      storageTime: 30 * 24 * 60 * 60 * 1000 // 30 dias
     },
     duration: null, // vitalício
-    description: 'Acesso completo e ilimitado para sempre'
+    description: 'Acesso completo e ilimitado para sempre',
+    benefits: [
+      'Downloads ilimitados',
+      'Qualidade até 4K',
+      'Sem propagandas',
+      'Suporte prioritário',
+      'Velocidade máxima',
+      'Até 10 downloads simultâneos',
+      'Armazenamento estendido'
+    ]
   }
 };
 
@@ -123,10 +163,161 @@ export const getRemainingDownloads = (user) => {
   return Math.max(0, limit - used);
 };
 
+/**
+ * Hierarquia dos planos (menor para maior)
+ */
+export const PLAN_HIERARCHY = [
+  PLAN_TYPES.FREE,
+  PLAN_TYPES.MONTHLY,
+  PLAN_TYPES.LIFETIME
+];
+
+/**
+ * Verificar se é um upgrade válido
+ */
+export const isValidUpgrade = (currentPlan, targetPlan) => {
+  const currentIndex = PLAN_HIERARCHY.indexOf(currentPlan);
+  const targetIndex = PLAN_HIERARCHY.indexOf(targetPlan);
+  
+  return targetIndex > currentIndex;
+};
+
+/**
+ * Verificar se é um downgrade válido
+ */
+export const isValidDowngrade = (currentPlan, targetPlan) => {
+  const currentIndex = PLAN_HIERARCHY.indexOf(currentPlan);
+  const targetIndex = PLAN_HIERARCHY.indexOf(targetPlan);
+  
+  return targetIndex < currentIndex;
+};
+
+/**
+ * Calcular benefícios de upgrade
+ */
+export const calculateUpgradeBenefits = (currentPlan, targetPlan) => {
+  const current = PLAN_CONFIGS[currentPlan];
+  const target = PLAN_CONFIGS[targetPlan];
+  
+  if (!current || !target) {
+    return { benefits: [], improvements: {} };
+  }
+  
+  const improvements = {};
+  const benefits = [];
+  
+  // Comparar downloads mensais
+  if (target.features.monthlyDownloads === 0) {
+    improvements.downloads = 'Ilimitados';
+    benefits.push('Downloads ilimitados por mês');
+  } else if (target.features.monthlyDownloads > current.features.monthlyDownloads) {
+    improvements.downloads = `+${target.features.monthlyDownloads - current.features.monthlyDownloads}`;
+    benefits.push(`Aumento para ${target.features.monthlyDownloads} downloads mensais`);
+  }
+  
+  // Comparar qualidades
+  if (target.features.quality.length > current.features.quality.length) {
+    const newQualities = target.features.quality.filter(q => !current.features.quality.includes(q));
+    improvements.quality = newQualities;
+    benefits.push(`Novas qualidades: ${newQualities.join(', ')}`);
+  }
+  
+  // Verificar remoção de ads
+  if (current.features.showAds && !target.features.showAds) {
+    improvements.ads = 'Removidas';
+    benefits.push('Experiência sem propagandas');
+  }
+  
+  return { benefits, improvements };
+};
+
+/**
+ * Formatar preço para exibição
+ */
+export const formatPrice = (price, currency = 'BRL') => {
+  if (price === 0) return 'Gratuito';
+  
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: currency
+  }).format(price);
+};
+
+/**
+ * Obter status do plano do usuário
+ */
+export const getPlanStatus = (userPlan) => {
+  if (!userPlan || !userPlan.type) {
+    return { 
+      status: 'free', 
+      active: true, 
+      message: 'Plano gratuito ativo' 
+    };
+  }
+  
+  const now = new Date();
+  
+  // Plano gratuito não expira
+  if (userPlan.type === PLAN_TYPES.FREE) {
+    return { 
+      status: 'active', 
+      active: true, 
+      message: 'Plano gratuito ativo' 
+    };
+  }
+  
+  // Plano vitalício não expira
+  if (userPlan.type === PLAN_TYPES.LIFETIME) {
+    return { 
+      status: 'active', 
+      active: true, 
+      message: 'Plano vitalício ativo' 
+    };
+  }
+  
+  // Verificar se o plano pago expirou
+  if (userPlan.endDate && now > userPlan.endDate) {
+    return { 
+      status: 'expired', 
+      active: false, 
+      message: 'Plano expirado', 
+      expiredAt: userPlan.endDate 
+    };
+  }
+  
+  // Verificar se está próximo do vencimento (3 dias)
+  if (userPlan.endDate) {
+    const daysUntilExpiry = Math.ceil((userPlan.endDate - now) / (1000 * 60 * 60 * 24));
+    
+    if (daysUntilExpiry <= 3) {
+      return { 
+        status: 'expiring', 
+        active: true, 
+        message: `Plano expira em ${daysUntilExpiry} ${daysUntilExpiry === 1 ? 'dia' : 'dias'}`,
+        expiresAt: userPlan.endDate,
+        daysLeft: daysUntilExpiry
+      };
+    }
+  }
+  
+  return { 
+    status: 'active', 
+    active: true, 
+    message: 'Plano ativo',
+    expiresAt: userPlan.endDate
+  };
+};
+
 export default {
   PLAN_TYPES,
   PLAN_CONFIGS,
+  PLAN_HIERARCHY,
   hasFeature,
   isPlanActive,
-  getRemainingDownloads
+  getRemainingDownloads,
+  isValidUpgrade,
+  isValidDowngrade,
+  calculateUpgradeBenefits,
+  formatPrice,
+  getPlanStatus
 };
