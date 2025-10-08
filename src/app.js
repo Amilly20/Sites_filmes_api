@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
 import planUpgradeRoutes from "./routes/planUpgradeRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import getSwaggerOptions from "./docs/config/head.js";
@@ -40,6 +41,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/plans", planUpgradeRoutes); // Rotas de upgrade/downgrade
+app.use("/api/payments", paymentRoutes); // Rotas de pagamento
 
 // Documentação Swagger
 const swaggerOptions = getSwaggerOptions();

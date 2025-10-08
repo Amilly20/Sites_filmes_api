@@ -119,7 +119,15 @@ describe('💎 Integração - Sistema de Planos no Registro', () => {
             unlimitedAccess: false,
             hdQuality: false,
             simultaneousDevices: 1,
-            offlineDownload: false
+            offlineDownload: false,
+            quality: ['720p'],
+            support: 'community',
+            downloadSpeed: 'normal',
+            concurrentDownloads: 1
+          },
+          limits: {
+            maxFileSize: 2147483648,
+            storageTime: 86400000
           },
           duration: null
         },
@@ -129,7 +137,11 @@ describe('💎 Integração - Sistema de Planos no Registro', () => {
           unlimitedAccess: false,
           hdQuality: false,
           simultaneousDevices: 1,
-          offlineDownload: false
+          offlineDownload: false,
+          quality: ['720p'],
+          support: 'community',
+          downloadSpeed: 'normal',
+          concurrentDownloads: 1
         },
         remainingDownloads: 10,
         isActive: true,
