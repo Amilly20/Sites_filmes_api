@@ -3,7 +3,9 @@ import DbConnect from '../config/dbConnect.js';
 import User from '../models/User.js';
 import Movie from '../models/Movie.js';
 import Plan from '../models/Plan.js';
+import BankAccount from '../models/BankAccount.js';
 import HashSenha from '../utils/hashSenha.js';
+import createDefaultBankAccount from './bankAccountSeed.js';
 
 const criarUsuarios = async () => [
 	{
@@ -115,6 +117,7 @@ const seedMovies = [
 		await User.deleteMany({});
 		await Plan.deleteMany({});
 		await Movie.deleteMany({});
+		await BankAccount.deleteMany({});
 
 		console.log('🔐 Criando senhas criptografadas...');
 		const seedUsers = await criarUsuarios();
@@ -128,10 +131,14 @@ const seedMovies = [
 		console.log('🎬 Criando filmes...');
 		const movies = await Movie.insertMany(seedMovies);
 
+		console.log('🏦 Criando conta bancária padrão...');
+		await createDefaultBankAccount();
+
 		console.log('✅ Seed concluído! Coleções criadas e populadas.');
 		console.log(`📈 ${users.length} usuários criados`);
 		console.log(`💳 ${plans.length} planos criados`);
 		console.log(`🎬 ${movies.length} filmes criados`);
+		console.log(`🏦 1 conta bancária padrão criada`);
 
 		await DbConnect.desconectar();
 		process.exit(0);
