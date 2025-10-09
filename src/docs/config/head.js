@@ -1,6 +1,10 @@
 // Configuração Swagger principal para importar rotas e schemas
+
+// Importar documentação de usuários
 import usuarioCadastrar from '../routes/users/userRegister.js';
 import userRegisterSchemas from '../schemas/users/userRegister.js';
+
+// Importar documentação de autenticação
 import authLogin from '../routes/auth/authLogin.js';
 import { forgotPassword, resetPassword } from '../routes/auth/passwordReset.js';
 import authSchemas from '../schemas/auth/authSchemas.js';
@@ -29,13 +33,17 @@ import paymentSchemas from '../schemas/payments.js';
 import planRestrictions from '../routes/plans/planRestrictions.js';
 import planRestrictionsSchemas from '../schemas/plans/planRestrictions.js';
 
+// Importar documentação de filmes - RF25
+import movieRoutes from '../routes/movies/movieRoutes.js';
+import movieSchemas from '../schemas/movies/movieSchemas.js';
+
 const getSwaggerOptions = () => ({
   definition: {
     openapi: '3.0.0',
     info: {
       title: 'API Sites Filmes',
       version: '1.0.0',
-      description: 'Documentação da API para cadastro de usuários e outros recursos.'
+      description: 'API para gerenciamento de filmes e planos de assinatura com todos os requisitos funcionais implementados.'
     },
     servers: [
       { 
@@ -44,23 +52,38 @@ const getSwaggerOptions = () => ({
       }
     ],
     tags: [
-      { name: 'Autenticacao', description: 'Operações de autenticação' },
-      { name: 'Usuario', description: 'Operações de usuário' },
+      // RF01, RF02, RF03, RF04, RF21 - Autenticação e Usuários
+      { 
+        name: 'Autenticacao', 
+        description: 'RF01, RF02, RF03, RF04, RF21 - Cadastro, login, recuperação de senha e autenticação JWT'
+      },
+      { 
+        name: 'Usuario', 
+        description: 'Gerenciamento de usuários e perfis'
+      },
+      
+      // RF05, RF06 - Planos de Assinatura  
       { 
         name: '💎 Planos', 
-        description: 'Sistema completo de planos de assinatura com 3 níveis: Gratuito (com anúncios), Mensal (sem anúncios, downloads limitados) e Vitalício (acesso completo)'
+        description: 'RF05, RF06 - Sistema completo de planos: Gratuito (com anúncios), Mensal (sem anúncios, limite downloads) e Vitalício (acesso completo). Inclui upgrade/downgrade.'
       },
-      { 
-        name: '💳 Pagamentos', 
-        description: 'Sistema completo de pagamentos com suporte a Cartão de Crédito/Débito, PIX e Boleto Bancário'
-      },
+      
+      // RF07 - Sistema de Pagamentos (ÚNICO - SEM DUPLICAÇÃO)
       { 
         name: '💰 Pagamentos', 
-        description: 'Sistema brasileiro completo de pagamentos: Cartão (Crédito/Débito), PIX instantâneo e Boleto bancário. Processamento seguro com gateways nacionais.'
+        description: 'RF07 - Sistema completo de pagamentos: Cartão de Crédito/Débito, PIX e Boleto Bancário. Processamento seguro via gateway.'
       },
+      
+      // RF08 - Restrições de Planos
       { 
         name: '🚫 Restrições de Planos', 
-        description: 'Exibição transparente das restrições de cada plano antes da compra. Comparações, avisos críticos e recomendações personalizadas.'
+        description: 'RF08 - Exibição transparente das restrições de cada plano. Comparações, avisos críticos e recomendações personalizadas.'
+      },
+      
+      // RF25 - Gerenciamento de Filmes
+      { 
+        name: '🎬 Filmes', 
+        description: 'RF25 - Sistema de cadastro e gerenciamento de filmes por administradores. Campos obrigatórios: título, sinopse, duração, ano, elenco, diretor, gêneros, idiomas, legendas, classificação etária, país, estúdio, imagens e trailer.'
       }
     ],
     paths: {
@@ -94,7 +117,9 @@ const getSwaggerOptions = () => ({
       '/plans/restrictions/stats': planRestrictions['/plans/restrictions/stats'],
       '/plans/restrictions/recommendation': planRestrictions['/plans/restrictions/recommendation'],
       '/plans/restrictions/{planType}': planRestrictions['/plans/restrictions/{planType}'],
-      '/plans/restrictions/{planType}/warnings': planRestrictions['/plans/restrictions/{planType}/warnings']
+      '/plans/restrictions/{planType}/warnings': planRestrictions['/plans/restrictions/{planType}/warnings'],
+      // Rotas de filmes - RF25
+      ...movieRoutes
     },
     components: {
       schemas: {
@@ -103,7 +128,8 @@ const getSwaggerOptions = () => ({
         ...planSchemas,
         ...planUpgradeSchemas,
         ...paymentSchemas,
-        ...planRestrictionsSchemas
+        ...planRestrictionsSchemas,
+        ...movieSchemas
       },
       securitySchemes: {
         bearerAuth: {

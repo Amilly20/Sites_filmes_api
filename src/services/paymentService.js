@@ -4,6 +4,7 @@
  */
 
 import Payment from '../models/Payment.js';
+import PaymentRepository from '../repositories/paymentRepository.js';
 import User from '../models/User.js';
 import { APIErro } from '../utils/ApiError.js';
 import { PLAN_CONFIGS, PLAN_TYPES } from '../utils/planUtils.js';
@@ -31,8 +32,8 @@ class PaymentService {
 
       const transactionId = this._generateTransactionId('CARD');
       
-      // Criar registro de pagamento
-      const payment = new Payment({
+      // Criar registro de pagamento usando repository
+      const payment = await PaymentRepository.create({
         userId,
         planType,
         amount: planConfig.price,
@@ -227,23 +228,23 @@ class PaymentService {
    */
   static async getUserPayments(userId, filters = {}) {
     try {
-      const query = { userId };
-      
-      if (filters.status) {
-        query.status = filters.status;
-      }
-      
-      if (filters.paymentMethod) {
-        query.paymentMethod = filters.paymentMethod;
-      }
+      const options = {
+        page: filters.page || 1,
+        limit: filters.limit || 20,
+        sortBy: 'createdAt',
+        order: 'desc'
+      };
 
-      const payments = await Payment.find(query)
-        .sort({ createdAt: -1 })
-        .limit(filters.limit || 20);
+      // Construir filtros
+      const queryFilters = { userId };
+      if (filters.status) queryFilters.status = filters.status;
+      if (filters.paymentMethod) queryFilters.paymentMethod = filters.paymentMethod;
+
+      const result = await PaymentRepository.findWithFilters(queryFilters, options);
 
       return {
-        payments: payments.map(p => p.getDisplayData()),
-        total: payments.length
+        payments: result.payments.map(p => p.getDisplayData()),
+        pagination: result.pagination
       };
 
     } catch (error) {
@@ -257,12 +258,9 @@ class PaymentService {
    */
   static async getPaymentDetails(paymentId, userId) {
     try {
-      const payment = await Payment.findOne({ 
-        _id: paymentId, 
-        userId 
-      });
+      const payment = await PaymentRepository.findById(paymentId);
 
-      if (!payment) {
+      if (!payment || payment.userId.toString() !== userId) {
         throw new APIErro(404, [{ path: "payment", message: "Pagamento não encontrado" }]);
       }
 
