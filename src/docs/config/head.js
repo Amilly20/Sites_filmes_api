@@ -21,6 +21,14 @@ import planChangeIntelligent from '../routes/plans/planChangeIntelligent.js';
 import upgradeOptions from '../routes/plans/upgradeOptions.js';
 import changePreview from '../routes/plans/changePreview.js';
 
+// Importar documentação de pagamentos - RF07
+import payments from '../routes/payments.js';
+import paymentSchemas from '../schemas/payments.js';
+
+// Importar documentação de restrições de planos - RF08
+import planRestrictions from '../routes/plans/planRestrictions.js';
+import planRestrictionsSchemas from '../schemas/plans/planRestrictions.js';
+
 const getSwaggerOptions = () => ({
   definition: {
     openapi: '3.0.0',
@@ -41,6 +49,18 @@ const getSwaggerOptions = () => ({
       { 
         name: '💎 Planos', 
         description: 'Sistema completo de planos de assinatura com 3 níveis: Gratuito (com anúncios), Mensal (sem anúncios, downloads limitados) e Vitalício (acesso completo)'
+      },
+      { 
+        name: '💳 Pagamentos', 
+        description: 'Sistema completo de pagamentos com suporte a Cartão de Crédito/Débito, PIX e Boleto Bancário'
+      },
+      { 
+        name: '💰 Pagamentos', 
+        description: 'Sistema brasileiro completo de pagamentos: Cartão (Crédito/Débito), PIX instantâneo e Boleto bancário. Processamento seguro com gateways nacionais.'
+      },
+      { 
+        name: '🚫 Restrições de Planos', 
+        description: 'Exibição transparente das restrições de cada plano antes da compra. Comparações, avisos críticos e recomendações personalizadas.'
       }
     ],
     paths: {
@@ -59,14 +79,31 @@ const getSwaggerOptions = () => ({
       '/plans/downgrade': planDowngrade['/plans/downgrade'],
       '/plans/change-intelligent': planChangeIntelligent['/plans/change-intelligent'],
       '/plans/upgrade-options': upgradeOptions['/plans/upgrade-options'],
-      '/plans/change-preview': changePreview['/plans/change-preview']
+      '/plans/change-preview': changePreview['/plans/change-preview'],
+      // Rotas de pagamentos - RF07
+      '/payments/card': payments['/payments/card'],
+      '/payments/pix': payments['/payments/pix'],
+      '/payments/boleto': payments['/payments/boleto'],
+      '/payments': payments['/payments'],
+      '/payments/{id}': payments['/payments/{id}'],
+      '/payments/{id}/status': payments['/payments/{id}/status'],
+      '/payments/methods/available': payments['/payments/methods/available'],
+      '/payments/webhook/{gateway}': payments['/payments/webhook/{gateway}'],
+      // Rotas de restrições de planos - RF08
+      '/plans/restrictions/compare': planRestrictions['/plans/restrictions/compare'],
+      '/plans/restrictions/stats': planRestrictions['/plans/restrictions/stats'],
+      '/plans/restrictions/recommendation': planRestrictions['/plans/restrictions/recommendation'],
+      '/plans/restrictions/{planType}': planRestrictions['/plans/restrictions/{planType}'],
+      '/plans/restrictions/{planType}/warnings': planRestrictions['/plans/restrictions/{planType}/warnings']
     },
     components: {
       schemas: {
         ...userRegisterSchemas,
         ...authSchemas,
         ...planSchemas,
-        ...planUpgradeSchemas
+        ...planUpgradeSchemas,
+        ...paymentSchemas,
+        ...planRestrictionsSchemas
       },
       securitySchemes: {
         bearerAuth: {
