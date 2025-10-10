@@ -1,4 +1,4 @@
-import { APIErro } from "../utils/ApiError.js";
+import { APIError } from "../utils/ApiError.js";
 import { sendError, sendResponse } from "../utils/messages.js";
 
 /**

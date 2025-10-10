@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import UserRepository from '../repositories/userRepository.js';
 import HashSenha from '../utils/hashSenha.js';
 import UserValidationSchema from '../validadores/userValidator.js';
-import { APIErro } from "../utils/ApiError.js";
+import { APIError } from "../utils/ApiError.js";
 
 class PasswordResetService {
   static async requestPasswordReset(email) {
@@ -40,7 +40,7 @@ class PasswordResetService {
     });
 
     if (!user) {
-      throw new APIErro(400, [{
+      throw new APIError(400, [{
         path: "token",
         message: "Token inválido ou expirado"
       }]);
@@ -64,7 +64,7 @@ class PasswordResetService {
       
     } catch (validationError) {
       if (validationError.issues) {
-        throw new APIErro(400, validationError.issues.map(issue => ({
+        throw new APIError(400, validationError.issues.map(issue => ({
           path: issue.path[0],
           message: issue.message
         })));

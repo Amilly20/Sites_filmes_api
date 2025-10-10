@@ -1,5 +1,5 @@
 import UserRepository from "../repositories/userRepository.js";
-import { APIErro } from "../utils/ApiError.js";
+import { APIError } from "../utils/ApiError.js";
 import { sendError, sendResponse } from "../utils/messages.js";
 import UserValidationSchema from "../validadores/userValidator.js";
 import { z } from 'zod';
@@ -55,9 +55,9 @@ class UserController {
         }
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
 
       if (error instanceof z.ZodError) {

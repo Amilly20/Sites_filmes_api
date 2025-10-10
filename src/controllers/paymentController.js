@@ -4,7 +4,7 @@
  */
 
 import PaymentService from '../services/paymentService.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { PLAN_TYPES } from '../utils/planUtils.js';
 
 class PaymentController {
@@ -19,7 +19,7 @@ class PaymentController {
 
       // Validar entrada
       if (!planType || !cardData) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "body", 
           message: "Dados do plano e cartão são obrigatórios" 
         }]);
@@ -27,7 +27,7 @@ class PaymentController {
 
       // Validar plano
       if (!Object.values(PLAN_TYPES).includes(planType)) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "planType", 
           message: "Tipo de plano inválido" 
         }]);
@@ -49,7 +49,7 @@ class PaymentController {
       });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         return res.status(error.statusCode).json({
           success: false,
           message: "Erro no processamento do cartão",
@@ -76,7 +76,7 @@ class PaymentController {
 
       // Validar entrada
       if (!planType) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "planType", 
           message: "Tipo de plano é obrigatório" 
         }]);
@@ -84,7 +84,7 @@ class PaymentController {
 
       // Validar plano
       if (!Object.values(PLAN_TYPES).includes(planType)) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "planType", 
           message: "Tipo de plano inválido" 
         }]);
@@ -102,7 +102,7 @@ class PaymentController {
       });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         return res.status(error.statusCode).json({
           success: false,
           message: "Erro no processamento do PIX",
@@ -129,7 +129,7 @@ class PaymentController {
 
       // Validar entrada
       if (!planType || !customerData) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "body", 
           message: "Dados do plano e cliente são obrigatórios" 
         }]);
@@ -137,7 +137,7 @@ class PaymentController {
 
       // Validar plano
       if (!Object.values(PLAN_TYPES).includes(planType)) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "planType", 
           message: "Tipo de plano inválido" 
         }]);
@@ -159,7 +159,7 @@ class PaymentController {
       });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         return res.status(error.statusCode).json({
           success: false,
           message: "Erro no processamento do boleto",
@@ -203,7 +203,7 @@ class PaymentController {
       });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         return res.status(error.statusCode).json({
           success: false,
           message: "Erro ao listar pagamentos",
@@ -229,7 +229,7 @@ class PaymentController {
       const { id: paymentId } = req.params;
 
       if (!paymentId) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "id", 
           message: "ID do pagamento é obrigatório" 
         }]);
@@ -244,7 +244,7 @@ class PaymentController {
       });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         return res.status(error.statusCode).json({
           success: false,
           message: "Erro ao buscar pagamento",
@@ -270,7 +270,7 @@ class PaymentController {
       const { id: paymentId } = req.params;
 
       if (!paymentId) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: "id", 
           message: "ID do pagamento é obrigatório" 
         }]);
@@ -285,7 +285,7 @@ class PaymentController {
       });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         return res.status(error.statusCode).json({
           success: false,
           message: "Erro ao verificar status",

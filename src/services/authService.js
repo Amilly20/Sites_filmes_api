@@ -2,7 +2,7 @@ import UserRepository from '../repositories/userRepository.js'
 import Jwt from "jsonwebtoken";
 import HashSenha from '../utils/hashSenha.js';
 import AutenticacaoSchema from '../validadores/authValidator.js';
-import { APIErro } from "../utils/ApiError.js";
+import { APIError } from "../utils/ApiError.js";
 
 class AuthService {
     static login = async (data) => {
@@ -11,7 +11,7 @@ class AuthService {
         const user = await UserRepository.findByEmail(email)
 
         if (!user) {
-            throw new APIErro(400, [{
+            throw new APIError(400, [{
                 path: "email",
                 message: "Usuário não existe por favor corrija o email ou crie uma nova conta"
             }])
@@ -19,7 +19,7 @@ class AuthService {
 
         const response = await HashSenha.compararSenha(senha, user.password)
         if (!response) {
-            throw new APIErro(400, [{
+            throw new APIError(400, [{
                 path: "senha",
                 message: "Senha incorreta por favor corrija a senha"
             }])

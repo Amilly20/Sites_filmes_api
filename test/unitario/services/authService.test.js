@@ -27,7 +27,7 @@ jest.unstable_mockModule('jsonwebtoken', () => ({
 
 // Importar após configurar mocks
 const AuthService = (await import('../../../src/services/authService.js')).default;
-const { APIErro } = await import('../../../src/utils/ApiError.js');
+const { APIError } = await import('../../../src/utils/ApiError.js');
 
 describe('🔐 AuthService', () => {
   beforeEach(() => {
@@ -90,7 +90,7 @@ describe('🔐 AuthService', () => {
       // Act & Assert
       await expect(AuthService.login({ email, senha }))
         .rejects
-        .toThrow(APIErro);
+        .toThrow(APIError);
     });
 
     test('deve lançar erro quando senha está incorreta', async () => {
@@ -109,7 +109,7 @@ describe('🔐 AuthService', () => {
       // Act & Assert
       await expect(AuthService.login({ email, senha }))
         .rejects
-        .toThrow(APIErro);
+        .toThrow(APIError);
     });
 
     test('deve validar entrada com schema de autenticação', async () => {

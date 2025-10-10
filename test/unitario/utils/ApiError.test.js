@@ -1,40 +1,40 @@
 import { describe, test, expect } from '@jest/globals';
-import { APIErro } from '../../../src/utils/ApiError.js';
+import { APIError } from '../../../src/utils/ApiError.js';
 
-describe('⚠️ APIErro', () => {
+describe('⚠️ APIError', () => {
   describe('construtor', () => {
-    test('deve criar erro com code e errors', () => {
+    test('deve criar erro com statusCode e errors', () => {
       const code = 400;
       const errors = ['Erro de teste'];
       
-      const error = new APIErro(code, errors);
+      const error = new APIError(code, errors);
       
-      expect(error.code).toBe(code);
+      expect(error.statusCode).toBe(code);
       expect(error.errors).toEqual(errors);
       expect(error instanceof Error).toBe(true);
-      expect(error instanceof APIErro).toBe(true);
+      expect(error instanceof APIError).toBe(true);
     });
 
-    test('deve usar code padrão 400 quando não fornecido', () => {
-      const errors = ['Erro sem code'];
+    test('deve usar statusCode padrão 400 quando não fornecido', () => {
+      const errors = ['Erro sem statusCode'];
       
-      const error = new APIErro(undefined, errors);
+      const error = new APIError(undefined, errors);
       
-      expect(error.code).toBe(400);
+      expect(error.statusCode).toBe(400);
       expect(error.errors).toEqual(errors);
     });
 
     test('deve usar errors padrão vazio quando não fornecido', () => {
       const code = 500;
       
-      const error = new APIErro(code);
+      const error = new APIError(code);
       
-      expect(error.code).toBe(code);
+      expect(error.statusCode).toBe(code);
       expect(error.errors).toEqual([]);
     });
 
     test('deve preservar stack trace', () => {
-      const error = new APIErro(400, ['Teste stack trace']);
+      const error = new APIError(400, ['Teste stack trace']);
       
       expect(error.stack).toBeDefined();
       expect(typeof error.stack).toBe('string');
@@ -43,25 +43,25 @@ describe('⚠️ APIErro', () => {
   });
 
   describe('toJson', () => {
-    test('deve retornar objeto JSON com code e errors', () => {
+    test('deve retornar objeto JSON com statusCode e errors', () => {
       const code = 400;
       const errors = ['Dados inválidos', 'Campo obrigatório'];
       
-      const error = new APIErro(code, errors);
+      const error = new APIError(code, errors);
       const json = error.toJson();
       
       expect(json).toEqual({
-        code: code,
+        statusCode: code,
         errors: errors
       });
     });
 
     test('deve retornar JSON com errors vazio quando não fornecido', () => {
-      const error = new APIErro(500);
+      const error = new APIError(500);
       const json = error.toJson();
       
       expect(json).toEqual({
-        code: 500,
+        statusCode: 500,
         errors: []
       });
     });
@@ -76,10 +76,10 @@ describe('⚠️ APIErro', () => {
       ];
 
       testCases.forEach(({ code, errors }) => {
-        const error = new APIErro(code, errors);
+        const error = new APIError(code, errors);
         const json = error.toJson();
         
-        expect(json.code).toBe(code);
+        expect(json.statusCode).toBe(code);
         expect(json.errors).toEqual(errors);
       });
     });
@@ -89,10 +89,10 @@ describe('⚠️ APIErro', () => {
     test('deve ser capturado por try/catch', () => {
       expect(() => {
         try {
-          throw new APIErro(400, ['Erro de teste']);
+          throw new APIError(400, ['Erro de teste']);
         } catch (error) {
-          expect(error instanceof APIErro).toBe(true);
-          expect(error.code).toBe(400);
+          expect(error instanceof APIError).toBe(true);
+          expect(error.statusCode).toBe(400);
           expect(error.errors).toEqual(['Erro de teste']);
           throw error; // Re-throw para o expect externo
         }
@@ -100,7 +100,7 @@ describe('⚠️ APIErro', () => {
     });
 
     test('deve manter propriedades Error padrão', () => {
-      const error = new APIErro(400, ['Teste']);
+      const error = new APIError(400, ['Teste']);
       
       expect(error.name).toBe('Error'); // Herda de Error
       expect(error instanceof Error).toBe(true);
@@ -109,20 +109,20 @@ describe('⚠️ APIErro', () => {
 
   describe('casos de uso comuns', () => {
     test('deve criar erros para diferentes cenários HTTP', () => {
-      const badRequest = new APIErro(400, ['Requisição inválida']);
-      const unauthorized = new APIErro(401, ['Token inválido']);
-      const forbidden = new APIErro(403, ['Acesso negado']);
-      const notFound = new APIErro(404, ['Recurso não encontrado']);
-      const internal = new APIErro(500, ['Erro interno']);
+      const badRequest = new APIError(400, ['Requisição inválida']);
+      const unauthorized = new APIError(401, ['Token inválido']);
+      const forbidden = new APIError(403, ['Acesso negado']);
+      const notFound = new APIError(404, ['Recurso não encontrado']);
+      const internal = new APIError(500, ['Erro interno']);
       
-      expect(badRequest.code).toBe(400);
-      expect(unauthorized.code).toBe(401);
-      expect(forbidden.code).toBe(403);
-      expect(notFound.code).toBe(404);
-      expect(internal.code).toBe(500);
+      expect(badRequest.statusCode).toBe(400);
+      expect(unauthorized.statusCode).toBe(401);
+      expect(forbidden.statusCode).toBe(403);
+      expect(notFound.statusCode).toBe(404);
+      expect(internal.statusCode).toBe(500);
       
       [badRequest, unauthorized, forbidden, notFound, internal].forEach(error => {
-        expect(error instanceof APIErro).toBe(true);
+        expect(error instanceof APIError).toBe(true);
         expect(error instanceof Error).toBe(true);
       });
     });
@@ -134,9 +134,9 @@ describe('⚠️ APIErro', () => {
         'Nome é obrigatório'
       ];
       
-      const error = new APIErro(422, errors);
+      const error = new APIError(422, errors);
       
-      expect(error.code).toBe(422);
+      expect(error.statusCode).toBe(422);
       expect(error.errors).toEqual(errors);
       expect(error.errors.length).toBe(3);
     });

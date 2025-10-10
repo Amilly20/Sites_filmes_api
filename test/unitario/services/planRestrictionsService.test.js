@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import PlanRestrictionsService from '../../../src/services/planRestrictionsService.js';
 import { PLAN_CONFIGS } from '../../../src/utils/planUtils.js';
-import { APIErro } from '../../../src/utils/ApiError.js';
+import { APIError } from '../../../src/utils/ApiError.js';
 
 describe('🚫 PlanRestrictionsService - Testes Unitários', () => {
 
@@ -51,7 +51,7 @@ describe('🚫 PlanRestrictionsService - Testes Unitários', () => {
     it('deve lançar erro para plano inválido', () => {
       expect(() => {
         PlanRestrictionsService.getPlanRestrictions('invalid');
-      }).toThrow(APIErro);
+      }).toThrow(APIError);
     });
 
     it('deve incluir recomendações de upgrade quando apropriado', () => {
@@ -108,7 +108,7 @@ describe('🚫 PlanRestrictionsService - Testes Unitários', () => {
     it('deve lançar erro para planos inválidos', () => {
       expect(() => {
         PlanRestrictionsService.comparePlanRestrictions(['free', 'invalid']);
-      }).toThrow(APIErro);
+      }).toThrow(APIError);
     });
   });
 
@@ -317,18 +317,18 @@ describe('🚫 PlanRestrictionsService - Testes Unitários', () => {
 
   describe('🚨 Tratamento de erros', () => {
     
-    it('deve lançar APIErro para parâmetros inválidos', () => {
+    it('deve lançar APIError para parâmetros inválidos', () => {
       expect(() => {
         PlanRestrictionsService.getPlanRestrictions(null);
-      }).toThrow(APIErro);
+      }).toThrow(APIError);
       
       expect(() => {
         PlanRestrictionsService.getPlanRestrictions('');
-      }).toThrow(APIErro);
+      }).toThrow(APIError);
       
       expect(() => {
         PlanRestrictionsService.comparePlanRestrictions([]);
-      }).toThrow(APIErro);
+      }).toThrow(APIError);
     });
 
     it('deve tratar graciosamente perfis de usuário inválidos', () => {

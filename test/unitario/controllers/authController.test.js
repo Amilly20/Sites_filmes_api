@@ -28,7 +28,7 @@ jest.unstable_mockModule('../../../src/utils/messages.js', () => mockMessages);
 
 // Importar após configurar mocks
 const Autenticacao = (await import('../../../src/controllers/authController.js')).default;
-const { APIErro } = await import('../../../src/utils/ApiError.js');
+const { APIError } = await import('../../../src/utils/ApiError.js');
 
 describe('🔐 AuthController', () => {
   let req, res;
@@ -91,7 +91,7 @@ describe('🔐 AuthController', () => {
         senha: 'senha-errada'
       };
 
-      const apiError = new APIErro(401, [
+      const apiError = new APIError(401, [
         { path: 'senha', message: 'Senha incorreta' }
       ]);
 
@@ -205,11 +205,11 @@ describe('🔐 AuthController', () => {
         email: 'joao@gmail.com'
       };
 
-      const apiError = new APIErro(400, [
+      const apiError = new APIError(400, [
         { path: 'email', message: 'Email inválido' }
       ]);
 
-      mockPasswordResetService.requestPasswordReset.mockRejectedValue(apiError);
+            mockPasswordResetService.requestPasswordReset.mockRejectedValue(apiError);
       mockMessages.sendError.mockReturnValue({ error: true });
 
       // Act
@@ -312,7 +312,7 @@ describe('🔐 AuthController', () => {
         newPassword: 'NovaSenha@123'
       };
 
-      const apiError = new APIErro(400, [
+      const apiError = new APIError(400, [
         { path: 'token', message: 'Token inválido ou expirado' }
       ]);
 

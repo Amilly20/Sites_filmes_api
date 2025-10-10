@@ -1,5 +1,5 @@
 import MovieRepository from '../repositories/movieRepository.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 
 /**
  * 🎬 Service de Filmes - RF25
@@ -19,7 +19,7 @@ class MovieService {
       );
 
       if (existingMovie) {
-        throw new APIErro(409, [{
+        throw new APIError(409, [{
           path: 'title',
           message: `Já existe um filme com o título "${movieData.title}" do ano ${movieData.releaseYear}`
         }]);
@@ -40,10 +40,10 @@ class MovieService {
       return movie;
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro interno ao criar filme'
       }]);
@@ -113,7 +113,7 @@ class MovieService {
       };
 
     } catch (error) {
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro ao buscar filmes'
       }]);
@@ -128,7 +128,7 @@ class MovieService {
       const movie = await MovieRepository.findById(id);
 
       if (!movie) {
-        throw new APIErro(404, [{
+        throw new APIError(404, [{
           path: 'id',
           message: 'Filme não encontrado'
         }]);
@@ -137,10 +137,10 @@ class MovieService {
       return this._formatMovieForDetail(movie);
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro ao buscar filme'
       }]);
@@ -156,7 +156,7 @@ class MovieService {
       const movie = await MovieRepository.findById(id);
 
       if (!movie) {
-        throw new APIErro(404, [{
+        throw new APIError(404, [{
           path: 'id',
           message: 'Filme não encontrado'
         }]);
@@ -164,7 +164,7 @@ class MovieService {
 
       // Verificar permissões
       if (!movie.canBeEditedBy(userId, userRole)) {
-        throw new APIErro(403, [{
+        throw new APIError(403, [{
           path: 'permission',
           message: 'Você não tem permissão para editar este filme'
         }]);
@@ -179,7 +179,7 @@ class MovieService {
           const existingMovie = await MovieRepository.findByTitleAndYear(titleToCheck, yearToCheck);
           
           if (existingMovie && existingMovie._id.toString() !== id) {
-            throw new APIErro(409, [{
+            throw new APIError(409, [{
               path: 'title',
               message: `Já existe outro filme com o título "${titleToCheck}" do ano ${yearToCheck}`
             }]);
@@ -203,10 +203,10 @@ class MovieService {
       return this._formatMovieForDetail(updatedMovie);
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro ao atualizar filme'
       }]);
@@ -221,7 +221,7 @@ class MovieService {
       const movie = await MovieRepository.findById(id);
 
       if (!movie) {
-        throw new APIErro(404, [{
+        throw new APIError(404, [{
           path: 'id',
           message: 'Filme não encontrado'
         }]);
@@ -229,7 +229,7 @@ class MovieService {
 
       // Verificar permissões
       if (!movie.canBeEditedBy(userId, userRole)) {
-        throw new APIErro(403, [{
+        throw new APIError(403, [{
           path: 'permission',
           message: 'Você não tem permissão para excluir este filme'
         }]);
@@ -243,10 +243,10 @@ class MovieService {
       };
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro ao excluir filme'
       }]);
@@ -261,7 +261,7 @@ class MovieService {
       const movie = await MovieRepository.findById(id);
 
       if (!movie) {
-        throw new APIErro(404, [{
+        throw new APIError(404, [{
           path: 'id',
           message: 'Filme não encontrado'
         }]);
@@ -269,7 +269,7 @@ class MovieService {
 
       // Verificar permissões
       if (!movie.canBeEditedBy(userId, userRole)) {
-        throw new APIErro(403, [{
+        throw new APIError(403, [{
           path: 'permission',
           message: 'Você não tem permissão para alterar o status deste filme'
         }]);
@@ -293,10 +293,10 @@ class MovieService {
       };
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro ao alterar status do filme'
       }]);
@@ -321,7 +321,7 @@ class MovieService {
       };
 
     } catch (error) {
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro ao obter estatísticas'
       }]);
@@ -336,7 +336,7 @@ class MovieService {
       const { term, filters = {}, options = {} } = searchParams;
       
       if (!term || term.length < 2) {
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'term',
           message: 'Termo de busca deve ter pelo menos 2 caracteres'
         }]);
@@ -345,10 +345,10 @@ class MovieService {
       return await MovieRepository.searchMovies(term, { ...filters, ...options });
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
-      throw new APIErro(500, [{
+      throw new APIError(500, [{
         path: 'server',
         message: 'Erro na pesquisa de filmes'
       }]);
@@ -366,13 +366,13 @@ class MovieService {
     // Validar duração mínima e máxima
     if (movieData.duration) {
       if (movieData.duration < 1) {
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'duration',
           message: 'Duração deve ser pelo menos 1 minuto'
         }]);
       }
       if (movieData.duration > 600) { // 10 horas
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'duration',
           message: 'Duração não pode exceder 600 minutos (10 horas)'
         }]);
@@ -383,7 +383,7 @@ class MovieService {
     if (movieData.releaseYear) {
       const currentYear = new Date().getFullYear();
       if (movieData.releaseYear > currentYear + 5) {
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'releaseYear',
           message: `Ano de lançamento não pode ser superior a ${currentYear + 5}`
         }]);
@@ -393,19 +393,19 @@ class MovieService {
     // Validar URLs obrigatórias
     if (!isUpdate) {
       if (!movieData.url) {
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'url',
           message: 'URL do filme é obrigatória'
         }]);
       }
       if (!movieData.images?.poster) {
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'images.poster',
           message: 'URL do poster é obrigatória'
         }]);
       }
       if (!movieData.trailer?.url) {
-        throw new APIErro(400, [{
+        throw new APIError(400, [{
           path: 'trailer.url',
           message: 'URL do trailer é obrigatória'
         }]);
@@ -414,7 +414,7 @@ class MovieService {
 
     // Validar elenco mínimo
     if (movieData.cast && movieData.cast.length === 0) {
-      throw new APIErro(400, [{
+      throw new APIError(400, [{
         path: 'cast',
         message: 'Filme deve ter pelo menos 1 ator no elenco'
       }]);
@@ -422,7 +422,7 @@ class MovieService {
 
     // Validar gêneros mínimos
     if (movieData.genres && movieData.genres.length === 0) {
-      throw new APIErro(400, [{
+      throw new APIError(400, [{
         path: 'genres',
         message: 'Filme deve ter pelo menos 1 gênero'
       }]);
@@ -441,7 +441,7 @@ class MovieService {
     };
 
     if (!allowedTransitions[currentStatus]?.includes(newStatus)) {
-      throw new APIErro(400, [{
+      throw new APIError(400, [{
         path: 'status',
         message: `Não é possível alterar status de "${currentStatus}" para "${newStatus}"`
       }]);

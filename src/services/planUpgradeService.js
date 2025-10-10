@@ -4,7 +4,7 @@
  */
 
 import User from '../models/User.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { PLAN_TYPES, PLAN_CONFIGS } from '../utils/planUtils.js';
 
 class PlanUpgradeService {
@@ -18,7 +18,7 @@ class PlanUpgradeService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -27,7 +27,7 @@ class PlanUpgradeService {
       const upgradeInfo = this._validateUpgrade(currentPlan, targetPlan);
 
       if (!upgradeInfo.isValid) {
-        throw new APIErro(400, [
+        throw new APIError(400, [
           { path: "upgrade", message: upgradeInfo.reason }
         ]);
       }
@@ -52,11 +52,11 @@ class PlanUpgradeService {
         planDetails: PLAN_CONFIGS[targetPlan]
       };
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao fazer upgrade:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "upgrade", message: "Erro interno no upgrade" }
       ]);
     }
@@ -72,7 +72,7 @@ class PlanUpgradeService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -81,7 +81,7 @@ class PlanUpgradeService {
       const downgradeInfo = this._validateDowngrade(currentPlan, targetPlan);
 
       if (!downgradeInfo.isValid) {
-        throw new APIErro(400, [
+        throw new APIError(400, [
           { path: "downgrade", message: downgradeInfo.reason }
         ]);
       }
@@ -107,11 +107,11 @@ class PlanUpgradeService {
         planDetails: PLAN_CONFIGS[targetPlan]
       };
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao fazer downgrade:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "downgrade", message: "Erro interno no downgrade" }
       ]);
     }
@@ -127,7 +127,7 @@ class PlanUpgradeService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -136,7 +136,7 @@ class PlanUpgradeService {
       
       // Não permitir mudança para o mesmo plano
       if (currentPlan === targetPlan) {
-        throw new APIErro(400, [
+        throw new APIError(400, [
           { path: "plan", message: "Você já possui este plano" }
         ]);
       }
@@ -149,11 +149,11 @@ class PlanUpgradeService {
         return await this.downgradePlan(userId, targetPlan);
       }
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro na mudança de plano:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "plan", message: "Erro interno na mudança de plano" }
       ]);
     }
@@ -168,7 +168,7 @@ class PlanUpgradeService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -204,11 +204,11 @@ class PlanUpgradeService {
         options: upgradeOptions
       };
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao obter opções de upgrade:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "options", message: "Erro interno ao carregar opções" }
       ]);
     }
