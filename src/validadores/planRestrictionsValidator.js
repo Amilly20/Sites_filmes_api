@@ -1,5 +1,5 @@
 import { body, param, query, validationResult } from 'express-validator';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 
 /**
  * 🚫📋 VALIDADORES PARA RESTRIÇÕES DE PLANOS
@@ -20,7 +20,7 @@ const handleValidationErrors = (req, res, next) => {
       location: error.location
     }));
 
-    throw new APIErro(
+    throw new APIError(
       400, 
       'Dados de entrada inválidos para restrições de planos',
       formattedErrors

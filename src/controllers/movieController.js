@@ -1,5 +1,5 @@
 import MovieService from '../services/movieService.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { validationResult } from 'express-validator';
 
 /**
@@ -15,7 +15,7 @@ class MovieController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new APIErro(400, errors.array());
+        throw new APIError(400, errors.array());
       }
 
       const movie = await MovieService.createMovie(req.body, req.user.id);
@@ -75,7 +75,7 @@ class MovieController {
       });
     } catch (error) {
       if (error.name === 'CastError') {
-        return next(new APIErro(400, [{
+        return next(new APIError(400, [{
           path: 'id',
           message: 'ID do filme inválido'
         }]));
@@ -91,7 +91,7 @@ class MovieController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new APIErro(400, errors.array());
+        throw new APIError(400, errors.array());
       }
 
       const { id } = req.params;
@@ -122,7 +122,7 @@ class MovieController {
       });
     } catch (error) {
       if (error.name === 'CastError') {
-        return next(new APIErro(400, [{
+        return next(new APIError(400, [{
           path: 'id',
           message: 'ID do filme inválido'
         }]));
@@ -196,7 +196,7 @@ class MovieController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new APIErro(400, errors.array());
+        throw new APIError(400, errors.array());
       }
 
       const { id } = req.params;

@@ -1,5 +1,5 @@
 import PlanRestrictionsService from '../services/planRestrictionsService.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { validationResult } from 'express-validator';
 
 /**
@@ -15,7 +15,7 @@ class PlanRestrictionsController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new APIErro(400, errors.array());
+        throw new APIError(400, errors.array());
       }
 
       const { planType } = req.params;
@@ -31,7 +31,7 @@ class PlanRestrictionsController {
       });
     } catch (error) {
       if (error.message === 'Plano não encontrado') {
-        return next(new APIErro(404, [{ 
+        return next(new APIError(404, [{ 
           path: 'planType', 
           message: 'Plano não encontrado. Tipos válidos: free, monthly, lifetime' 
         }]));
@@ -75,7 +75,7 @@ class PlanRestrictionsController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new APIErro(400, errors.array());
+        throw new APIError(400, errors.array());
       }
 
       const { planType } = req.params;
@@ -100,7 +100,7 @@ class PlanRestrictionsController {
       });
     } catch (error) {
       if (error.message === 'Plano não encontrado') {
-        return next(new APIErro(404, [{ 
+        return next(new APIError(404, [{ 
           path: 'planType', 
           message: 'Plano não encontrado para análise de avisos' 
         }]));

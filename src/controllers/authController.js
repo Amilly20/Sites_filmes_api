@@ -1,6 +1,6 @@
 import AuthService from '../services/authService.js';
 import { z } from 'zod';
-import { APIErro } from "../utils/ApiError.js";
+import { APIError } from "../utils/ApiError.js";
 import { sendError, sendResponse } from "../utils/messages.js";
 import PasswordResetService from '../services/passwordResetService.js';
 
@@ -13,9 +13,9 @@ class Autenticacao {
                 data: response
             });
         } catch (error) {
-            if (error instanceof APIErro) {
-                const { code, errors } = error.toJson()
-                return sendError(res, code, ...errors)
+            if (error instanceof APIError) {
+                const { statusCode, errors } = error.toJson()
+                return sendError(res, statusCode, ...errors)
             }
 
             if (error instanceof z.ZodError) {
@@ -48,9 +48,9 @@ class Autenticacao {
                 message: "Se o email existir, um link de recuperação foi enviado"
             });
         } catch (error) {
-            if (error instanceof APIErro) {
-                const { code, errors } = error.toJson();
-                return sendError(res, code, ...errors);
+            if (error instanceof APIError) {
+                const { statusCode, errors } = error.toJson();
+                return sendError(res, statusCode, ...errors);
             }
 
             if (error instanceof z.ZodError) {
@@ -85,9 +85,9 @@ class Autenticacao {
                 message: "Senha alterada com sucesso"
             });
         } catch (error) {
-            if (error instanceof APIErro) {
-                const { code, errors } = error.toJson();
-                return sendError(res, code, ...errors);
+            if (error instanceof APIError) {
+                const { statusCode, errors } = error.toJson();
+                return sendError(res, statusCode, ...errors);
             }
             console.log("Erro no reset senha:", error);
             return sendError(res, 500, [{ path: "server", message: "Erro interno do servidor" }]);

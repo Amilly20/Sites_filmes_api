@@ -56,10 +56,10 @@ describe('🚫 Restrições de Planos - Testes Básicos', () => {
     it('deve retornar erro para plano inválido', async () => {
       const response = await request(testApp)
         .get('/api/plans/restrictions/invalid')
-        .expect(500); // Ajustado para 500 conforme comportamento real
+        .expect(400); // Ajustado para 400 conforme comportamento real
 
       // Simplificar - apenas verificar que obtivemos uma resposta
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(400);
     });
   });
 

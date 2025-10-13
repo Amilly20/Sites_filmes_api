@@ -1,5 +1,5 @@
 import PlanService from '../services/planService.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { sendError, sendResponse } from '../utils/messages.js';
 import { z } from 'zod';
 
@@ -16,9 +16,9 @@ class PlanController {
         data: plans
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
       
       console.error('Erro ao listar planos:', error);
@@ -41,9 +41,9 @@ class PlanController {
         data: planInfo
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
       
       console.error('Erro ao obter plano do usuário:', error);
@@ -75,9 +75,9 @@ class PlanController {
         data: result
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
 
       if (error instanceof z.ZodError) {
@@ -115,9 +115,9 @@ class PlanController {
         data: result
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
 
       if (error instanceof z.ZodError) {
@@ -176,9 +176,9 @@ class PlanController {
         data: adsConfig
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
       
       console.error('Erro ao carregar configuração de anúncios:', error);

@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import Plan from '../models/Plan.js';
 import { PLAN_CONFIGS, PLAN_TYPES, isPlanActive, getRemainingDownloads } from '../utils/planUtils.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 
 class PlanService {
   /**
@@ -19,7 +19,7 @@ class PlanService {
       return plans;
     } catch (error) {
       console.error('Erro ao listar planos:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "plans", message: "Erro ao carregar planos disponíveis" }
       ]);
     }
@@ -32,14 +32,14 @@ class PlanService {
     try {
       // Validar se o plano existe
       if (!Object.values(PLAN_TYPES).includes(newPlanType)) {
-        throw new APIErro(400, [
+        throw new APIError(400, [
           { path: "plan", message: "Plano inválido" }
         ]);
       }
 
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -77,11 +77,11 @@ class PlanService {
         remainingDownloads: planConfig.features.monthlyDownloads === 0 ? 'Ilimitado' : planConfig.features.monthlyDownloads
       };
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao alterar plano:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "plan", message: "Erro interno ao alterar plano" }
       ]);
     }
@@ -94,7 +94,7 @@ class PlanService {
     try {
       const user = await User.findById(userId).select('-password');
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -117,11 +117,11 @@ class PlanService {
         }
       };
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao obter informações do plano:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "plan", message: "Erro interno ao carregar informações do plano" }
       ]);
     }
@@ -134,14 +134,14 @@ class PlanService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
 
       // Verificar se o plano está ativo
       if (!isPlanActive(user)) {
-        throw new APIErro(403, [
+        throw new APIError(403, [
           { path: "plan", message: "Plano expirado. Renove sua assinatura." }
         ]);
       }
@@ -149,7 +149,7 @@ class PlanService {
       // Verificar limite de downloads
       const remainingDownloads = getRemainingDownloads(user);
       if (remainingDownloads === 0) {
-        throw new APIErro(403, [
+        throw new APIError(403, [
           { path: "downloads", message: "Limite de downloads mensal atingido" }
         ]);
       }
@@ -181,11 +181,11 @@ class PlanService {
         remainingDownloads: getRemainingDownloads(user)
       };
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao registrar download:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "download", message: "Erro interno ao registrar download" }
       ]);
     }
@@ -198,7 +198,7 @@ class PlanService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [
+        throw new APIError(404, [
           { path: "user", message: "Usuário não encontrado" }
         ]);
       }
@@ -221,11 +221,11 @@ class PlanService {
       await user.save();
       return user.plan;
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao inicializar plano gratuito:', error);
-      throw new APIErro(500, [
+      throw new APIError(500, [
         { path: "plan", message: "Erro interno ao inicializar plano" }
       ]);
     }

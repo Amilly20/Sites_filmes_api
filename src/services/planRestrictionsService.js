@@ -1,5 +1,5 @@
 import { PLAN_CONFIGS } from '../utils/planUtils.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 
 /**
  * 🚫 Serviço de Restrições de Planos
@@ -13,7 +13,7 @@ class PlanRestrictionsService {
   static getPlanRestrictions(planType) {
     const planConfig = PLAN_CONFIGS[planType];
     if (!planConfig) {
-      throw new APIErro(404, [{ message: 'Plano não encontrado' }]);
+      throw new APIError(404, [{ message: 'Plano não encontrado' }]);
     }
 
     const restrictions = {
@@ -113,13 +113,13 @@ class PlanRestrictionsService {
   static comparePlanRestrictions(planTypes = ['free', 'monthly', 'lifetime']) {
     // Validar se há planos para comparar
     if (!planTypes || planTypes.length === 0) {
-      throw new APIErro(400, [{ message: 'Lista de planos não pode estar vazia' }]);
+      throw new APIError(400, [{ message: 'Lista de planos não pode estar vazia' }]);
     }
 
     // Validar se todos os planos existem
     const invalidPlans = planTypes.filter(planType => !PLAN_CONFIGS[planType]);
     if (invalidPlans.length > 0) {
-      throw new APIErro(404, [{ message: `Planos não encontrados: ${invalidPlans.join(', ')}` }]);
+      throw new APIError(404, [{ message: `Planos não encontrados: ${invalidPlans.join(', ')}` }]);
     }
 
     const comparison = {

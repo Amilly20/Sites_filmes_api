@@ -4,7 +4,7 @@
  */
 
 import PlanUpgradeService from '../services/planUpgradeService.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { sendError, sendResponse } from '../utils/messages.js';
 import { z } from 'zod';
 
@@ -31,9 +31,9 @@ class PlanUpgradeController {
         data: result
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
 
       if (error instanceof z.ZodError) {
@@ -78,9 +78,9 @@ class PlanUpgradeController {
         data: result
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
 
       if (error instanceof z.ZodError) {
@@ -124,9 +124,9 @@ class PlanUpgradeController {
         data: result
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
 
       if (error instanceof z.ZodError) {
@@ -157,9 +157,9 @@ class PlanUpgradeController {
         data: options
       });
     } catch (error) {
-      if (error instanceof APIErro) {
-        const { code, errors } = error.toJson();
-        return sendError(res, code, ...errors);
+      if (error instanceof APIError) {
+        const { statusCode, errors } = error.toJson();
+        return sendError(res, statusCode, ...errors);
       }
       
       console.error('Erro ao carregar opções de upgrade:', error);

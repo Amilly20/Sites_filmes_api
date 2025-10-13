@@ -6,7 +6,7 @@
 import Payment from '../models/Payment.js';
 import PaymentRepository from '../repositories/paymentRepository.js';
 import User from '../models/User.js';
-import { APIErro } from '../utils/ApiError.js';
+import { APIError } from '../utils/ApiError.js';
 import { PLAN_CONFIGS, PLAN_TYPES } from '../utils/planUtils.js';
 import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto';
@@ -19,12 +19,12 @@ class PaymentService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [{ path: "user", message: "Usuário não encontrado" }]);
+        throw new APIError(404, [{ path: "user", message: "Usuário não encontrado" }]);
       }
 
       const planConfig = PLAN_CONFIGS[planType];
       if (!planConfig) {
-        throw new APIErro(400, [{ path: "plan", message: "Plano inválido" }]);
+        throw new APIError(400, [{ path: "plan", message: "Plano inválido" }]);
       }
 
       // Validar dados do cartão
@@ -73,11 +73,11 @@ class PaymentService {
       };
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro no pagamento com cartão:', error);
-      throw new APIErro(500, [{ path: "payment", message: "Erro interno no processamento" }]);
+      throw new APIError(500, [{ path: "payment", message: "Erro interno no processamento" }]);
     }
   }
 
@@ -88,12 +88,12 @@ class PaymentService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [{ path: "user", message: "Usuário não encontrado" }]);
+        throw new APIError(404, [{ path: "user", message: "Usuário não encontrado" }]);
       }
 
       const planConfig = PLAN_CONFIGS[planType];
       if (!planConfig) {
-        throw new APIErro(400, [{ path: "plan", message: "Plano inválido" }]);
+        throw new APIError(400, [{ path: "plan", message: "Plano inválido" }]);
       }
 
       const transactionId = this._generateTransactionId('PIX');
@@ -140,11 +140,11 @@ class PaymentService {
       };
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro no pagamento PIX:', error);
-      throw new APIErro(500, [{ path: "payment", message: "Erro interno no processamento" }]);
+      throw new APIError(500, [{ path: "payment", message: "Erro interno no processamento" }]);
     }
   }
 
@@ -155,12 +155,12 @@ class PaymentService {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        throw new APIErro(404, [{ path: "user", message: "Usuário não encontrado" }]);
+        throw new APIError(404, [{ path: "user", message: "Usuário não encontrado" }]);
       }
 
       const planConfig = PLAN_CONFIGS[planType];
       if (!planConfig) {
-        throw new APIErro(400, [{ path: "plan", message: "Plano inválido" }]);
+        throw new APIError(400, [{ path: "plan", message: "Plano inválido" }]);
       }
 
       // Validar dados do cliente para boleto
@@ -215,11 +215,11 @@ class PaymentService {
       };
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro no pagamento boleto:', error);
-      throw new APIErro(500, [{ path: "payment", message: "Erro interno no processamento" }]);
+      throw new APIError(500, [{ path: "payment", message: "Erro interno no processamento" }]);
     }
   }
 
@@ -249,7 +249,7 @@ class PaymentService {
 
     } catch (error) {
       console.error('Erro ao listar pagamentos:', error);
-      throw new APIErro(500, [{ path: "payments", message: "Erro ao carregar pagamentos" }]);
+      throw new APIError(500, [{ path: "payments", message: "Erro ao carregar pagamentos" }]);
     }
   }
 
@@ -261,17 +261,17 @@ class PaymentService {
       const payment = await PaymentRepository.findById(paymentId);
 
       if (!payment || payment.userId.toString() !== userId) {
-        throw new APIErro(404, [{ path: "payment", message: "Pagamento não encontrado" }]);
+        throw new APIError(404, [{ path: "payment", message: "Pagamento não encontrado" }]);
       }
 
       return payment.getDisplayData();
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao buscar pagamento:', error);
-      throw new APIErro(500, [{ path: "payment", message: "Erro interno" }]);
+      throw new APIError(500, [{ path: "payment", message: "Erro interno" }]);
     }
   }
 
@@ -286,7 +286,7 @@ class PaymentService {
       });
 
       if (!payment) {
-        throw new APIErro(404, [{ path: "payment", message: "Pagamento não encontrado" }]);
+        throw new APIError(404, [{ path: "payment", message: "Pagamento não encontrado" }]);
       }
 
       // Simular verificação no gateway
@@ -315,11 +315,11 @@ class PaymentService {
       };
 
     } catch (error) {
-      if (error instanceof APIErro) {
+      if (error instanceof APIError) {
         throw error;
       }
       console.error('Erro ao verificar status:', error);
-      throw new APIErro(500, [{ path: "status", message: "Erro interno" }]);
+      throw new APIError(500, [{ path: "status", message: "Erro interno" }]);
     }
   }
 
@@ -335,7 +335,7 @@ class PaymentService {
     
     for (const field of requiredFields) {
       if (!cardData[field]) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: field, 
           message: `Campo ${field} é obrigatório` 
         }]);
@@ -344,7 +344,7 @@ class PaymentService {
 
     // Validar número do cartão (Luhn algorithm básico)
     if (!/^\d{13,19}$/.test(cardData.number.replace(/\s/g, ''))) {
-      throw new APIErro(400, [{ 
+      throw new APIError(400, [{ 
         path: "number", 
         message: "Número do cartão inválido" 
       }]);
@@ -352,7 +352,7 @@ class PaymentService {
 
     // Validar CVV
     if (!/^\d{3,4}$/.test(cardData.cvv)) {
-      throw new APIErro(400, [{ 
+      throw new APIError(400, [{ 
         path: "cvv", 
         message: "CVV inválido" 
       }]);
@@ -367,7 +367,7 @@ class PaymentService {
     
     for (const field of requiredFields) {
       if (!customerData[field]) {
-        throw new APIErro(400, [{ 
+        throw new APIError(400, [{ 
           path: field, 
           message: `Campo ${field} é obrigatório para boleto` 
         }]);
@@ -376,7 +376,7 @@ class PaymentService {
 
     // Validar CPF/CNPJ básico
     if (!/^\d{11}$|^\d{14}$/.test(customerData.document.replace(/\D/g, ''))) {
-      throw new APIErro(400, [{ 
+      throw new APIError(400, [{ 
         path: "document", 
         message: "CPF ou CNPJ inválido" 
       }]);
