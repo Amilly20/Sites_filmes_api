@@ -3,7 +3,7 @@ const usuarioCadastrar = {
     "post": {
       "summary": "Cadastrar novo usuário",
       "description": "Registra um novo usuário no sistema.",
-      "tags": ["Usuario"],
+      "tags": ["👤 Usuários"],
       "security": [], // Não precisa autenticação
       "requestBody": {
         "required": true,

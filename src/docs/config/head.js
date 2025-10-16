@@ -2,6 +2,7 @@
 
 // Importar documentação de usuários
 import usuarioCadastrar from '../routes/users/userRegister.js';
+import userCancelSubscription from '../routes/users/userCancelSubscription.js';
 import userRegisterSchemas from '../schemas/users/userRegister.js';
 
 // Importar documentação de autenticação
@@ -57,9 +58,10 @@ const getSwaggerOptions = () => ({
         name: 'Autenticacao', 
         description: 'RF01, RF02, RF03, RF04, RF21 - Cadastro, login, recuperação de senha e autenticação JWT'
       },
+      // RF22 - Cancelamento de Assinatura
       { 
-        name: 'Usuario', 
-        description: 'Gerenciamento de usuários e perfis'
+        name: '👤 Usuários', 
+        description: 'RF22 - Gerenciamento de usuários e cancelamento de assinaturas'
       },
       
       // RF05, RF06 - Planos de Assinatura  
@@ -91,6 +93,7 @@ const getSwaggerOptions = () => ({
       ...forgotPassword,
       ...resetPassword,
       ...usuarioCadastrar,
+      ...userCancelSubscription,
       // Rotas de planos básicas
       '/plans': listPlans['/api/plans'],
       '/plans/my-plan': getMyPlan['/api/plans/my-plan'],
