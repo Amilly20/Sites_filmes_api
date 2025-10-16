@@ -47,7 +47,7 @@ const getSwaggerOptions = () => ({
     },
     servers: [
       { 
-        url: process.env.SWAGGER_DEV_URL || 'http://localhost:3000/api',
+        url: process.env.SWAGGER_DEV_URL || 'http://localhost:3800/api',
         description: 'Servidor de desenvolvimento'
       }
     ],

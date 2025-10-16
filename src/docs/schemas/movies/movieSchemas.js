@@ -261,7 +261,7 @@ export default {
       },
       status: {
         type: 'string',
-        enum: ['active', 'inactive', 'draft', 'archived']
+        enum: ['draft', 'published', 'archived']
       },
       createdBy: {
         type: 'object',
@@ -342,9 +342,9 @@ export default {
     properties: {
       status: {
         type: 'string',
-        enum: ['active', 'inactive', 'draft', 'archived'],
+        enum: ['draft', 'published', 'archived'],
         description: 'Novo status do filme',
-        example: 'active'
+        example: 'published'
       }
     }
   },

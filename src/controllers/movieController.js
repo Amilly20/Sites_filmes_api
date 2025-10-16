@@ -15,7 +15,8 @@ class MovieController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new APIError(400, errors.array());
+        const apiError = new APIError(400, errors.array());
+        return next(apiError);
       }
 
       const movie = await MovieService.createMovie(req.body, req.user.id);

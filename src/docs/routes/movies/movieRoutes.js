@@ -54,9 +54,9 @@ export default {
           description: 'Filtrar por status',
           schema: {
             type: 'string',
-            enum: ['active', 'inactive', 'draft', 'archived']
+            enum: ['draft', 'published', 'archived']
           },
-          example: 'active'
+          example: 'published'
         },
         {
           name: 'language',
